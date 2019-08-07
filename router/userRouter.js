@@ -21,7 +21,7 @@ userRouter.post('/register', async(ctx)=>{
     ctx.throw(409, '用户名重复')
   }
   const user = await new User(ctx.request.body).save()
-  ctx.body = user
+  ctx.body = {meta:{msg:"ok",status:200},data:user}
 
 })
 // $route POST /api/users/login
@@ -33,10 +33,13 @@ userRouter.post('/login', async(ctx)=>{
   }) 
 
   const user = await User.findOne(ctx.request.body)
+console.log(user)
   if(!user){
-    ctx.throw(401, '用户名或密码错误')
+    ctx.body = {meta:{msg:"用户名或密码错误",status:500},data:user}
+    return;
+   
   }
-  ctx.body = '登陆成功'
+  ctx.body = {meta:{msg:"ok",status:200},data:user}
 })
 // $route GET /api/users/
 // @desc  获取用户列表
@@ -52,7 +55,7 @@ userRouter.get('/:id', async(ctx)=>{
      ctx.throw(404, '用户不存在');
      return;
    }
-   ctx.body = user
+   ctx.body = {meta:{msg:"ok",status:200},data:user}
 }) 
 // $route PUT /api/users/:id
 // @desc  编辑用户
@@ -62,7 +65,7 @@ userRouter.put('/:id', async(ctx)=>{
       ctx.throw(404, '用户不存在');
       return;
     }
-    ctx.body = user
+    ctx.body = {meta:{msg:"ok",status:200},data:user}
 }) 
 // $route DElETE /api/users/:id
 // @desc  删除用户

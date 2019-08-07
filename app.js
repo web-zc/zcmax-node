@@ -1,9 +1,13 @@
 const Koa = require('koa')
-const cors = require('koa2-cors');
 const app = new Koa()
-app.use(cors());
+
 const router = require('./router/router')
 const bodyparser = require('koa-bodyparser')
+// 解决跨域 
+
+const zhoux = require('koa2-cors')
+app.use(zhoux()); 
+
 app.use(bodyparser())
 // 参数校验
 const parameter = require('koa-parameter')
@@ -18,6 +22,7 @@ mongoose.connect('mongodb://139.196.72.164/zcmax',{useNewUrlParser: true})
   console.log(err)
 })
 // 挂载总路由
+
 app
   .use(router.routes())
   .use(router.allowedMethods());
