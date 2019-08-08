@@ -9,7 +9,7 @@ const zhoux = require('koa2-cors')
 app.use(zhoux()); 
 
 app.use(bodyparser())
-// 参数校验
+// 参数 校验
 const parameter = require('koa-parameter')
 app.use(parameter(app))
 // 链接数据库
@@ -22,7 +22,6 @@ mongoose.connect('mongodb://139.196.72.164/zcmax',{useNewUrlParser: true})
   console.log(err)
 })
 // 挂载总路由
-
 app
   .use(router.routes())
   .use(router.allowedMethods());

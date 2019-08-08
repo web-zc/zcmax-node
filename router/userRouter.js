@@ -23,7 +23,6 @@ userRouter.post('/register', async (ctx) => {
   }
   const user = await new User(ctx.request.body).save()
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
-
 })
 // $route POST /api/users/login
 // @desc  登陆用户
@@ -47,23 +46,18 @@ userRouter.post('/login', async (ctx) => {
 userRouter.get('/', async (ctx) => {
   let pagesize = ctx.query.pagesize
   let pagenumber = ctx.query.pagenumber
-  
   const count = await User.find()
-
   const user = await User.find().skip(pagesize * (pagenumber - 1)).limit(pagesize*1)
-  
   ctx.body = { meta: { msg: "ok", count:count.length, status: 200 }, data: user }
 })
 // $route GET /api/users/search
-// @desc  搜索用户
-
+// @desc  根据用户名搜索用户
 userRouter.get('/search', async (ctx) => {
   const user = await User.find()
   let reuser = user.filter((item) => {
     return -1 != item.name.indexOf(ctx.query.name)
   })
   ctx.body = { meta: { msg: "ok", status: 200 }, data: reuser }
-
 })
 // $route GET /api/users/:id
 // @desc  获取指定用户用户
