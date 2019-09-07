@@ -35,4 +35,13 @@ talkRouter.put('/:id', async (ctx) => {
   }
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
 })
+// $route GET /api/talks/search
+// @desc  根据内容搜索贴子
+talkRouter.get('/search', async (ctx) => {
+  const user = await Talk.find()
+  let reuser = user.filter((item) => {
+    return -1 != item.content.indexOf(ctx.query.content)
+  })
+  ctx.body = { meta: { msg: "ok", status: 200 }, data: reuser }
+})
 module.exports = talkRouter.routes()
