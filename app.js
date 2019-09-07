@@ -4,7 +4,6 @@ const app = new Koa()
 const router = require('./router/router')
 const bodyparser = require('koa-bodyparser')
 // 解决跨域 
-
 const zhoux = require('koa2-cors')
 app.use(zhoux()); 
 
