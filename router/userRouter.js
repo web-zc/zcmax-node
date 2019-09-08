@@ -37,7 +37,6 @@ userRouter.post('/login', async (ctx) => {
   if (!user) {
     ctx.body = { meta: { msg: "用户名或密码错误", status: 500 }, data: user }
     return;
-
   }
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
 })
