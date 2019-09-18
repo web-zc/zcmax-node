@@ -24,6 +24,6 @@ mongoose.connect('mongodb://139.196.72.164/zcmax',{useNewUrlParser: true})
 app
   .use(router.routes())
   .use(router.allowedMethods());
-app.listen(3010,()=>{
-  console.log('3010 start')
+app.listen(4000,()=>{
+  console.log('4000 start')
 })
