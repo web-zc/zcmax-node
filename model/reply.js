@@ -17,10 +17,6 @@ const  replySchema = new Schema({
   content:{ // 回复内容 
     type:  String,
     required:true
-  },
-  data:{ // 回复时间
-    type:Date,
-    default:Date.now
   }
 
 })

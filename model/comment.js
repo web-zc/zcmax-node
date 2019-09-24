@@ -6,12 +6,12 @@ const commentSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true
   },
-  pId: { // 贴子id
+  tId: { // 贴子id
     type: Schema.Types.ObjectId,
     required: true
   },
   date:{ // 创建时间
-    type:Date,
+    type:Number,
     default: Date.now
   },
   content:{ // 评论内容

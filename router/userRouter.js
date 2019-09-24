@@ -1,5 +1,6 @@
 const Router = require('koa-router')
 const User = require('../model/user')
+const Comment = require('../model/comment')
 // 前缀
 const userRouter = new Router({ prefix: '/users' })
 // $route GET /api/users/test
@@ -89,4 +90,18 @@ userRouter.delete('/:id', async (ctx) => {
   ctx.body = { meta: { msg: "删除成功", status: 204 }, data: user }
 })
 
+// $route POST /api/users/:uid/talks/:tid
+// @desc 用户评论该帖子
+userRouter.post('/:uid/talks/:tid', async (ctx) => {
+ 
+  const user = await new Comment({tId:ctx.params.tid,uId:ctx.params.uid,...ctx.request.body}).save()
+  ctx.body = { meta: { msg: "ok", status: 200 }, data: user}
+})
+// $route GET /api/users/:uid/talks
+// @desc 用户评论该帖子
+userRouter.get('/:uid/talks', async (ctx) => {
+ 
+  const user = await  Comment.find({uId:ctx.params.uid})
+  ctx.body = { meta: { msg: "ok", status: 200 }, data: user}
+})
 module.exports = userRouter.routes()

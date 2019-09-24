@@ -35,15 +35,18 @@ talkRouter.post('/:uid/category/:cid', async (ctx) => {
 // $route GET /api/talks
 // @desc 获取贴子列表
 talkRouter.get('/', async (ctx) => {
-  const user = await Talk.find()
-  ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
+
+  let pagesize = ctx.query.pagesize ||   0
+  let pagenumber = ctx.query.pagenumber || 1
+  const count = await Talk.find()
+  const user = await Talk.find().skip(pagesize * (pagenumber - 1)).limit(pagesize*1)
+  ctx.body = { meta: { msg: "ok", count:count.length, status: 200 }, data: user }
 })
 
 // $route DELETE /api/talks/:id
 // @desc 删除贴子
 talkRouter.delete('/:id', async (ctx) => {
-  // const user = await Talk.findByIdAndRemove(ctx.params.id)
-  // const user = await Talk.re
+  const user = await Talk.findByIdAndRemove(ctx.params.id)
   if (!user) {
     ctx.body = { meta: { msg: "贴子不存在", status: 404 }, data: user }
     return;
@@ -61,12 +64,12 @@ talkRouter.put('/:id', async (ctx) => {
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
 })
 // $route GET /api/talks/search
-// @desc  根据内容搜索贴子
+// @desc  根据内容搜索贴子 分页
 talkRouter.get('/search', async (ctx) => {
-  const user = await Talk.find()
-  let reuser = user.filter((item) => {
-    return -1 != item.content.indexOf(ctx.query.content)
-  })
-  ctx.body = { meta: { msg: "ok", status: 200 }, data: reuser }
+  let pagesize = ctx.query.pagesize ||   0
+  let pagenumber = ctx.query.pagenumber || 1
+  const user = await Talk.find({content:new RegExp(ctx.query.content,'g')}).skip(pagesize * (pagenumber - 1)).limit(pagesize*1)
+  
+  ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
 })
 module.exports = talkRouter.routes()
