@@ -1,6 +1,21 @@
 const Router = require('koa-router')
 const User = require('../model/user')
 const Comment = require('../model/comment')
+// jwt
+const jwt = require('jsonwebtoken')
+const auth = async (ctx, next) => {
+  const { authorization = '' } = ctx.request.header
+  const token = authorization.replace('Bearer ', '')
+  try {
+    const user = jwt.verify(token, 'aaa')
+    ctx.state.user = user
+  } catch (err) {
+    ctx.body = { meta: { msg: "没有权限", status: 403 }, data: err }
+    return;
+  }
+  await next()
+}
+
 // 前缀
 const userRouter = new Router({ prefix: '/users' })
 // $route GET /api/users/test
@@ -34,16 +49,18 @@ userRouter.post('/login', async (ctx) => {
   })
 
   const user = await User.findOne(ctx.request.body)
-  console.log(user)
   if (!user) {
     ctx.body = { meta: { msg: "用户名或密码错误", status: 500 }, data: user }
     return;
   }
-  ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
+   const { _id, name } = user
+    const token = jwt.sign({ _id, name },'aaa',{expiresIn:3600})
+
+  ctx.body = { meta: { msg: "ok", status: 200 }, data:{token:`Bearer ${token}`} }
 })
 // $route GET /api/users/
 // @desc  获取用户列表 分页
-userRouter.get('/', async (ctx) => {
+userRouter.get('/',auth, async (ctx) => {
   let pagesize = ctx.query.pagesize
   let pagenumber = ctx.query.pagenumber
   const count = await User.find()
