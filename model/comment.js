@@ -1,17 +1,23 @@
 const mongoose = require('mongoose')
 const { Schema, model } = mongoose
-// 评论
+// 评论表
 const commentSchema = new Schema({
-  comm: {
-    type: [{
-      content: { type: String }, // 评论内容
-      tiem: { type: Date }, // 专业
-      userId: {type:Schema.Types.ObjectId}, // 评论用户
-    }]
+  uId: { // 评论用户id
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  pId: { // 贴子id
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  date:{ // 创建时间
+    type:Date,
+    default: Date.now
+  },
+  content:{ // 评论内容
+    type:String,
+    required: true
   }
-
-
-
 })
 // 生成模型
 module.exports = mo = model('Comment', commentSchema)

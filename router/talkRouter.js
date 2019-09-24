@@ -1,13 +1,36 @@
 const Router = require('koa-router')
 const Talk = require('../model/talk')
+const Postclass = require('../model/postclass')
 // 前缀
 const talkRouter = new Router({ prefix: '/talks' })
-// $route POST /api/talks/:id
+// $route POST /api/talks/category
+// @desc 添加分类
+talkRouter.post('/category', async (ctx) => {
+  try {
+    ctx.verifyParams({
+      category: { type: 'string', required: true },
+    })
+  }
+  catch (err) {
+    return ctx.body = { meta: { msg: "参数错误", status: 400 }, data: err }
+  }
+  const res = await new Postclass(ctx.request.body).save()
+  ctx.body = { meta: { msg: "添加成功", status: 200 }, data: res }
+})
+// $route GET /api/talks/category
+// @desc 查看所有贴子分类
+talkRouter.get('/category', async (ctx) => {
+  const res = await Postclass.find()
+  ctx.body = { meta: { msg: "获取成功", status: 200 }, data: res }
+})
+// $route POST /api/talks/:uid/category/:cid
 // @desc 用户添加帖子
-talkRouter.post('/:id', async (ctx) => {
-  const datax = {category:'1',content:'我是一个兵',userId:'5d7371dc6ba04610ac797b19'}
-  const user = await new Talk(datax).save()
-  ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
+talkRouter.post('/:uid/category/:cid', async (ctx) => {
+  const uId = ctx.params.uid 
+  const cId = ctx.params.cid
+  const user3 = ctx.request.body
+  const res = await new Talk({uId,cId,...user3}).save()
+  ctx.body = { meta: { msg: "ok", status: 200 },data: res  }
 })
 // $route GET /api/talks
 // @desc 获取贴子列表
@@ -15,12 +38,14 @@ talkRouter.get('/', async (ctx) => {
   const user = await Talk.find()
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
 })
+
 // $route DELETE /api/talks/:id
 // @desc 删除贴子
 talkRouter.delete('/:id', async (ctx) => {
-  const user = await Talk.findByIdAndRemove(ctx.params.id)
+  // const user = await Talk.findByIdAndRemove(ctx.params.id)
+  // const user = await Talk.re
   if (!user) {
-    ctx.body = { meta: { msg: "用户不存在", status: 404 }, data: user }
+    ctx.body = { meta: { msg: "贴子不存在", status: 404 }, data: user }
     return;
   }
   ctx.body = { meta: { msg: "删除成功", status: 204 }, data: user }

@@ -2,9 +2,6 @@ const mongoose = require('mongoose')
 const {Schema, model} = mongoose
 // userSchema
 const userSchema = new Schema({
-  talkId: { // 讨论id
-    type: Schema.Types.ObjectId,
-  },
   name: {
     type: String,
     required: true
@@ -13,7 +10,7 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  avatar_url: { //头像
+  avatar: { //头像
     type: String,
   },
   gender: { // 性别，枚举
