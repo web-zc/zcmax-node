@@ -19,6 +19,6 @@ const  replySchema = new Schema({
     required:true
   }
 
-})
+},{versionKey:false})
 // 生成模型
 module.exports = mo = model('postclass', replySchema)

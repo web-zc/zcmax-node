@@ -21,6 +21,6 @@ const userSchema = new Schema({
     type: String
   }
 
-})
+},{versionKey:false})
 // 生成模型
 module.exports = mo = model('User',userSchema)

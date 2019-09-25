@@ -56,7 +56,7 @@ userRouter.post('/login', async (ctx) => {
    const { _id, name } = user
     const token = jwt.sign({ _id, name },'aaa',{expiresIn:3600})
 
-  ctx.body = { meta: { msg: "ok", status: 200 }, data:{token:`Bearer ${token}`} }
+  ctx.body = { meta: { msg: "ok", status: 200 }, data:{user,token:`Bearer ${token}`} }
 })
 // $route GET /api/users/
 // @desc  获取用户列表 分页

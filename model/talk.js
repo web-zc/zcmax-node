@@ -21,6 +21,6 @@ const talkSchema = new Schema({
     type:Number,
     default: Date.now
   }
-})
+},{versionKey:false})
 // 生成模型
 module.exports = mo = model('Talk', talkSchema)

@@ -18,6 +18,6 @@ const commentSchema = new Schema({
     type:String,
     required: true
   }
-})
+},{versionKey:false})
 // 生成模型
 module.exports = mo = model('Comment', commentSchema)

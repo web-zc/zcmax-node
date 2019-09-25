@@ -15,6 +15,6 @@ const  replySchema = new Schema({
     enum: ['0', '1'], default: '0', required: true
   }
 
-})
+},{versionKey:false})
 // 生成模型
 module.exports = mo = model('postclass', replySchema)
