@@ -60,7 +60,7 @@ userRouter.post('/login', async (ctx) => {
 })
 // $route GET /api/users/
 // @desc  获取用户列表 分页
-userRouter.get('/',auth, async (ctx) => {
+userRouter.get('/', async (ctx) => {
   let pagesize = ctx.query.pagesize
   let pagenumber = ctx.query.pagenumber
   const count = await User.find()
@@ -81,7 +81,7 @@ userRouter.get('/search', async (ctx) => {
 userRouter.get('/:id', async (ctx) => {
   const user = await User.findById(ctx.params.id)
   if (!user) {
-    ctx.throw(404, '用户不存在');
+    ctx.body = { meta: { msg: "用户不存在", status: 404 }, data: user }
     return;
   }
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user }
@@ -114,8 +114,22 @@ userRouter.post('/:uid/talks/:tid', async (ctx) => {
   const user = await new Comment({tId:ctx.params.tid,uId:ctx.params.uid,...ctx.request.body}).save()
   ctx.body = { meta: { msg: "ok", status: 200 }, data: user}
 })
+// $route POST /api/users/:uid/talks/:tid/:mid
+// @desc 用户回复评论
+userRouter.post('/:uid/talks/:tid/:mid', async (ctx) => {
+ 
+  const user = await new Comment({tId:ctx.params.tid,uId:ctx.params.uid,mId:ctx.params.mid,...ctx.request.body}).save()
+  ctx.body = { meta: { msg: "ok", status: 200 }, data: user}
+})
+// $route DELETE /api/users/zhoux
+// @desc 删除所有评论
+userRouter.delete('/zhoux/c', async (ctx) => {
+ 
+  const user = await  Comment.deleteMany()
+  ctx.body = { meta: { msg: "ok", status: 200 }, data: user}
+})
 // $route GET /api/users/:uid/talks
-// @desc 用户评论该帖子
+// @desc 获取用户评论该帖子
 userRouter.get('/:uid/talks', async (ctx) => {
  
   const user = await  Comment.find({uId:ctx.params.uid})

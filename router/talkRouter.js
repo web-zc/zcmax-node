@@ -1,5 +1,7 @@
 const Router = require('koa-router')
 const Talk = require('../model/talk')
+const Comment = require('../model/comment')
+const User = require('../model/user')
 const Postclass = require('../model/postclass')
 const mongoose = require('mongoose')
 // 前缀
@@ -41,6 +43,16 @@ talkRouter.get('/category/:id', async (ctx) => {
   const res = await Postclass.findById(ctx.params.id)
   ctx.body = { meta: { msg: "获取成功", status: 200 }, data: res }
 })
+// $route DELET /api/talks/category:id
+// @desc 删除指定分类
+talkRouter.delete('/category/:id', async (ctx) => {
+  const user = await Postclass.findByIdAndRemove(ctx.params.id)
+  if (!user) {
+    ctx.body = { meta: { msg: "分类不存在", status: 404 }, data: user }
+    return;
+  }
+  ctx.body = { meta: { msg: "删除成功", status: 204 }, data: user }
+})
 // $route POST /api/talks/:uid/category/:cid
 // @desc 用户添加帖子
 talkRouter.post('/:uid/category/:cid', async (ctx) => {
@@ -77,10 +89,14 @@ talkRouter.get('/categorys/:id', async (ctx) => {
 // @desc 获取贴贴子详情
 talkRouter.get('/:id', async (ctx) => {
   let xId =   ctx.params.id
-
-  const user = await Talk
-  . aggregate([{$match: {"_id": mongoose.Types.ObjectId(xId)  }},{ $lookup: { from: 'comments', localField: '_id', foreignField: 'tId', as: 'comments' } } ]) 
-  ctx.body = { meta: { msg: "ok",  status: 200 }, data:user  }
+  let talk = await Talk
+  . aggregate([{$match: {"_id": mongoose.Types.ObjectId(xId)}},{ $lookup: { from: 'users', localField: 'uId', foreignField: '_id', as: 'users' } } ]);
+  let comment = await Comment
+  . aggregate([{$match: {"tId": mongoose.Types.ObjectId(xId)}},{$match: {"commentType": "comment"}},{ $lookup: { from: 'users', localField: 'uId', foreignField: '_id', as: 'users' } },{$sort:{date:-1}} ]);
+  let reply = await Comment
+  . aggregate([{$match: {"tId": mongoose.Types.ObjectId(xId)}},{$match: {"commentType": "reply"}},{ $lookup: { from: 'users', localField: 'uId', foreignField: '_id', as: 'users' } } ]);
+    
+    ctx.body = { meta: { msg: "ok",  status: 200 }, data: {talk,comment,reply}}
 })
 
 // $route DELETE /api/talks/:id
