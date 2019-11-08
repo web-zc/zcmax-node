@@ -80,8 +80,8 @@ talkRouter.get('/categorys/:id', async (ctx) => {
   let fenx = ctx.params.id
   let pagesize = ctx.query.pagesize ||   6
   let pagenumber = ctx.query.pagenumber || 1
-  const user = await Postclass.
-  aggregate([{$match: {"_id": mongoose.Types.ObjectId(ctx.params.id)}},{$skip:pagesize * (pagenumber - 1)},{$limit:pagesize*1},{ $lookup: { from: 'talks', localField: '_id', foreignField: 'cId', as: 'class' } },{$sort:{date:-1}} ]) 
+  const user = await Talk.
+  aggregate([{$match: {"cId": mongoose.Types.ObjectId(ctx.params.id)}},{$skip:pagesize * (pagenumber - 1)},{$limit:pagesize*1},{ $lookup: { from: 'users', localField: 'uId', foreignField: '_id', as: 'users' } },{$sort:{date:-1}} ]) 
   ctx.body = { meta: { msg: "ok", count:user.length, status: 200 }, data: user }
 })
 
